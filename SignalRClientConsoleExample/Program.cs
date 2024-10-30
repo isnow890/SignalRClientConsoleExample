@@ -8,41 +8,63 @@ namespace SignalRClientConsoleApp
     {
         static async Task Main(string[] args)
         {
+            Console.Write("시작");
             // SignalR 서버 URL 설정
             var hubConnection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5080/gameHub") // 서버 URL 설정
+                // .WithUrl("http://localhost:5080/gameHub") // 서버 URL 설정
+                .WithUrl("https://isnow.space/gameHub") // 서버 URL 설정
                 .Build();
 
             // 이벤트 수신 설정
-            hubConnection.On<GameUpdateModel>("PlayerLeft", update =>
-            {
-                Console.WriteLine($"PlayerLeft event received: Game No {update.GameNo}, UserSeq {update.Data["userSeq"]}");
-            });
+            hubConnection.On<GameUpdateModel>(
+                "PlayerLeft",
+                update =>
+                {
+                    Console.WriteLine(
+                        $"PlayerLeft event received: Game No {update.GameNo}, UserSeq {update.Data["userSeq"]}"
+                    );
+                }
+            );
 
-            hubConnection.On<GameUpdateModel>("GameCreated", update =>
-            {
-                Console.WriteLine($"GameCreated event received: Game No {update.GameNo}, update : gameNo : {update.Data["gameNo"] } creatorId : {update.Data["creatorId"] }");
-            });
+            hubConnection.On<GameUpdateModel>(
+                "GameCreated",
+                update =>
+                {
+                    Console.WriteLine(
+                        $"GameCreated event received: Game No {update.GameNo}, update : gameNo : {update.Data["gameNo"]} creatorId : {update.Data["creatorId"]}"
+                    );
+                }
+            );
 
+            hubConnection.On<GameUpdateModel>(
+                "GameStarted",
+                update =>
+                {
+                    Console.WriteLine(
+                        $"GameStarted event received: Game No {update.GameNo}, StartTime {update.Data["startTime"]}"
+                    );
+                }
+            );
 
+            hubConnection.On<GameUpdateModel>(
+                "GameEnded",
+                update =>
+                {
+                    Console.WriteLine(
+                        $"GameEnded event received: Game No {update.GameNo}, EndTime {update.Data["endTime"]}"
+                    );
+                }
+            );
 
-            hubConnection.On<GameUpdateModel>("GameStarted", update =>
-            {
-                Console.WriteLine($"GameStarted event received: Game No {update.GameNo}, StartTime {update.Data["startTime"]}");
-            });
-
-            hubConnection.On<GameUpdateModel>("GameEnded", update =>
-            {
-                Console.WriteLine($"GameEnded event received: Game No {update.GameNo}, EndTime {update.Data["endTime"]}");
-            });
-
-
-            hubConnection.On<GameUpdateModel>("PlayerJoined", update =>
-            {
-                Console.WriteLine($"PlayerJoined event received: Game No {update.GameNo}, update : userSeq : {update.Data["userSeq"] } nickName : {update.Data["nickName"] } ");
-            });
-
-
+            hubConnection.On<GameUpdateModel>(
+                "PlayerJoined",
+                update =>
+                {
+                    Console.WriteLine(
+                        $"PlayerJoined event received: Game No {update.GameNo}, update : userSeq : {update.Data["userSeq"]} nickName : {update.Data["nickName"]} "
+                    );
+                }
+            );
 
             try
             {
@@ -54,7 +76,6 @@ namespace SignalRClientConsoleApp
                 Console.WriteLine("Listening for events. Press any key to exit...");
                 // 무기한 대기 상태 유지
                 await Task.Delay(-1);
-
             }
             catch (Exception ex)
             {
